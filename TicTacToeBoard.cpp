@@ -1,4 +1,5 @@
 #include "TicTacToeBoard.h"
+#include <iostream>
 /**
  * Class for representing a 3x3 Tic-Tac-Toe game board, using the Piece enum
  * to represent the spaces on the board.
@@ -19,7 +20,12 @@ TicTacToeBoard::TicTacToeBoard()
 **/
 Piece TicTacToeBoard::toggleTurn()
 {
-  return Invalid;
+  if (turn == O) {
+    turn = X;
+  } else if (turn == X) {
+    turn = O;
+  }
+  return turn;
 }
 
 /**
@@ -33,7 +39,22 @@ Piece TicTacToeBoard::toggleTurn()
 **/ 
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  return Invalid;
+  // get the piece in the location specified
+  Piece piece = getPiece(row, column);
+  if (piece == X || piece == O) {
+    return piece;
+  } else if (piece == Blank) {
+    board[row][column] = turn;
+    toggleTurn();
+    return board[row][column];
+  } else if (piece == Invalid) {
+    return  Invalid;
+  }
+  // if piece can be placed
+  if (getWinner() != Invalid) {
+    return getWinner();
+  }
+  return piece;
 }
 
 /**
@@ -42,7 +63,11 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-  return Invalid;
+   // if spot not on the board
+  if (row  > BOARDSIZE-1 || row < 0 || column > BOARDSIZE-1 || column < 0 ) {
+    return Invalid;
+  } 
+  return board[row][column];
 }
 
 /**
@@ -51,5 +76,121 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
+  Piece firstPiece = getPiece(0, 0);
+  bool blank = false;
+  // check first column
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(i, 0);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+    } else {
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+  // check first row
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(0, i);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+    } else {
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+// ------------------------------------------------
+  firstPiece = getPiece(0, 1);
+  // check second column
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(i, 1);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+    } else {
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+
+  firstPiece = getPiece(1, 0);
+  // check second row
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(1, i);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+    } else {
+       if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+
+//-----------------------------------------------------------------
+  firstPiece = getPiece(2, 0);
+  // check third row
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(2, i);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+    } else {
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+  firstPiece = getPiece(2, 0);
+  // check third column
+  for(int i = 1; i < BOARDSIZE; i++) {
+    Piece newPiece = getPiece(2, i);
+    if (firstPiece == newPiece) {
+      firstPiece = newPiece;
+      if (i == BOARDSIZE - 1) {
+        return firstPiece;
+      }
+    } else {
+      if (firstPiece == Blank) {
+        blank = true;
+      }
+      break;
+    }
+  }
+//--------------------------------------------------------------------
+  // check diagonals
+  if (getPiece(0,0) == getPiece(1,1) && getPiece(1,1) == getPiece(2,2)) {
+
+    return getPiece(0,0);
+  }
+  if (getPiece(2,0) == getPiece(1,1) && getPiece(1,1) == getPiece(0,2)) {
+    return getPiece(2,0);
+  }
+  
+  if (blank) {
+    return Blank;
+  }
   return Invalid;
 }
